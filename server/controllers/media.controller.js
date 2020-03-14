@@ -113,8 +113,113 @@ const video = (req, res) => {
   }
 }
 
+const listPopular = async (req, res) => {
+  try {
+    let media = await Media.find({}).limit(9)
+      .populate("postedBy", "_id name")
+      .sort("-views")
+      .exec()
+    res.json(media)
+  } catch (err) {
+    return res.status(400).json({
+      error: errorHandler.getErrorMessage(err)
+    })
+  }
+}
+
+const listByUser = async (req, res) => {
+  try {
+    let media = await Media.find({ postedBy: req.profile._id })
+      .populate("postedBy", "_id name")
+      .sort("-created")
+      .exec()
+    res.json(media)
+  } catch (err) {
+    return res.status(400).json({
+      error: errorHandler.getErrorMessage(err)
+    })
+  }
+}
+
+const read = (req, res) => {
+  return res.json(req.media)
+}
+
+const incrementViews = async (req, res, next) => {
+  try {
+    await Media.findByIdAndUpdate(req.media._id, { $inc: { "views": 1 } }, { new: true }).exec()
+    next()
+  } catch (err) {
+    return res.status(400).json({
+      error: errorHandler.getErrorMessage(err)
+    })
+  }
+}
+
+const isPoster = (req, res, next) => {
+  let isPoster = req.media && req.auth && req.media.postedBy._id == req.auth._id
+
+  if (!isPoster) {
+    return res.status("403").json({
+      error: "User is not authorized"
+    })
+  }
+
+  next()
+}
+
+const update = async (req, res) => {
+  try {
+    let media = req.media
+    media = extend(media, req.body)
+    media.updated = Date.now()
+    await media.save()
+    res.json(media)
+  } catch (err) {
+    return res.status(400).json({
+      error: errorHandler.getErrorMessage(err)
+    })
+  }
+}
+
+const remove = async (req, res) => {
+  try {
+    let media = req.media
+    let deletedMedia = await media.remove()
+    gridfs.delete(req.file._id)
+    res.json(deletedMedia)
+  } catch (err) {
+    return res.status(400).json({
+      error: errorHandler.getErrorMessage(err)
+    })
+  }
+}
+
+const listRelated = async (req, res) => {
+  try {
+    let media = await Media.find({ "_id": { "$ne": req.media }, "genre": req.media.genre })
+      .limit(4)
+      .sort("-views")
+      .populate("postedBy", "_id name")
+      .exec()
+    res.json(media)
+  } catch (err) {
+    return res.status(400).json({
+      error: errorHandler.getErrorMessage(err)
+    })
+  }
+}
+
 export default {
   create,
   mediaByID,
-  video
+  video,
+  listPopular,
+  listByUser,
+  read,
+  incrementViews,
+  isPoster,
+  update,
+  remove,
+  listRelated
 }
