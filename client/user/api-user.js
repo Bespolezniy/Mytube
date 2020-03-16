@@ -91,12 +91,28 @@ const remove = async (params, credentials) => {
 
 }
 
+const listByUser = async params => {
+  try {
+    let response = await fetch("/api/media/by/" + params.userId, {
+      method: "GET",
+      headers: {
+        "Accept": "application/json",
+        "Content-Type": "application/json"
+      }
+    })
+    return await response.json()
+  } catch (err) {
+    console.log(err)
+  }
+}
+
 export { 
   create, 
   list, 
   read, 
   update, 
-  remove 
+  remove,
+  listByUser
 }
   
   
