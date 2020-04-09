@@ -1,59 +1,53 @@
-import React from "react"
+import React, { useState, useEffect } from "react";
 
-import { makeStyles } from "@material-ui/core/styles"
-import { 
-  Card,
-  CardContent, 
-  CardMedia,
-  Typography
-} from "@material-ui/core"
+import { makeStyles } from "@material-ui/core/styles";
+import { Card, Typography } from "@material-ui/core";
 
-import Mern from "./../assets/images/mern.webp"
+import MediaList from "../media/MediaList";
+import { listPopular } from "../media/api-media.js";
 
-const useStyles = makeStyles( theme => ({
+const useStyles = makeStyles((theme) => ({
   card: {
-    maxWidth: 600,
-    margin: "auto",
-    marginTop: theme.spacing(5)
+    margin: `${theme.spacing(5)}px 30px`,
   },
   title: {
-    padding:`${theme.spacing(3)}px ${theme.spacing(2.5)}px
-    ${theme.spacing(2)}px`,
-    color: theme.palette.text.secondary
+    padding: `${theme.spacing(3)}px ${theme.spacing(2.5)}px 0px`,
+    color: theme.palette.text.secondary,
+    fontSize: "1em",
   },
   media: {
-    minHeight: 330
-  }
-}))
+    minHeight: 330,
+  },
+}));
 
-const Home = () => {
+export default function Home() {
+  const classes = useStyles();
+  const [media, setMedia] = useState([]);
 
-  const classes = useStyles()
+  useEffect(() => {
+    const abortController = new AbortController();
+    const signal = abortController.signal;
+
+    listPopular(signal).then((data) => {
+      if (data.error) {
+        console.log(data.error);
+      } else {
+        setMedia(data);
+      }
+    });
+    
+    return function cleanup() {
+      abortController.abort();
+    };
+  }, []);
 
   return (
-    <div>
-      <Card className={classes.card}>
-        <Typography 
-          type="headline" 
-          component="h2" 
-          className={classes.title}
-        >
-          Main Page
-        </Typography>
+    <Card className={classes.card}>
+      <Typography variant="h2" className={classes.title}>
+        Popular Videos
+      </Typography>
 
-        <CardMedia 
-          className={classes.media} 
-          image={Mern}
-          title="Welcome"/>
-
-        <CardContent>
-          <Typography type="body1" component="p">
-            Welcome to the My boiler code home page
-          </Typography>
-        </CardContent>
-      </Card>
-    </div>
-  )
+      <MediaList media={media} />
+    </Card>
+  );
 }
-
-export default Home

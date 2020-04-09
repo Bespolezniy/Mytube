@@ -1,23 +1,23 @@
 import React, { useState, useEffect } from "react";
 import { Redirect } from "react-router-dom";
 
-import {
+import { 
   Card,
   CardActions,
   CardContent,
   Button,
   TextField,
   Typography,
-  Icon,
+  Icon 
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 
 import auth from "./../auth/auth-helper";
-import { read, update } from "./api-user.js";
+import { read, update } from "./api-media.js";
 
 const useStyles = makeStyles((theme) => ({
   card: {
-    maxWidth: 600,
+    maxWidth: 500,
     margin: "auto",
     textAlign: "center",
     marginTop: theme.spacing(5),
@@ -26,6 +26,7 @@ const useStyles = makeStyles((theme) => ({
   title: {
     margin: theme.spacing(2),
     color: theme.palette.protectedTitle,
+    fontSize: "1em",
   },
   error: {
     verticalAlign: "middle",
@@ -39,119 +40,110 @@ const useStyles = makeStyles((theme) => ({
     margin: "auto",
     marginBottom: theme.spacing(2),
   },
+  input: {
+    display: "none",
+  },
+  filename: {
+    marginLeft: "10px",
+  },
 }));
 
 export default function EditProfile({ match }) {
   const classes = useStyles();
-  const [values, setValues] = useState({
-    name: "",
-    password: "",
-    email: "",
-    open: false,
-    error: "",
-    redirectToProfile: false,
-  });
+  const [media, setMedia] = useState({ title: "", description: "", genre: "" });
+  const [redirect, setRedirect] = useState(false);
+  const [error, setError] = useState("");
   const jwt = auth.isAuthenticated();
 
   useEffect(() => {
     const abortController = new AbortController();
-    const signal = abortController.signal;
 
-    read(
-      {
-        userId: match.params.userId,
-      },
-      { t: jwt.token },
-      signal
-    ).then((data) => {
-      if (data && data.error) {
-        setValues({ ...values, error: data.error });
+    read({ mediaId: match.params.mediaId }).then((data) => {
+      if (data.error) {
+        setError(data.error);
       } else {
-        setValues({ ...values, name: data.name, email: data.email });
+        setMedia(data);
       }
     });
-
     return function cleanup() {
       abortController.abort();
     };
-  }, [match.params.userId]);
+  }, [match.params.mediaId]);
 
   const clickSubmit = () => {
-    const user = {
-      name: values.name || undefined,
-      email: values.email || undefined,
-      password: values.password || undefined,
-    };
     update(
       {
-        userId: match.params.userId,
+        mediaId: media._id,
       },
       {
         t: jwt.token,
       },
-      user
+      media
     ).then((data) => {
-      if (data && data.error) {
-        setValues({ ...values, error: data.error });
+      if (data.error) {
+        setError(data.error);
       } else {
-        setValues({ ...values, userId: data._id, redirectToProfile: true });
+        setRedirect(true);
       }
     });
   };
 
   const handleChange = (name) => (event) => {
-    setValues({ ...values, [name]: event.target.value });
+    let updatedMedia = { ...media };
+    updatedMedia[name] = event.target.value;
+    setMedia(updatedMedia);
   };
 
-  if (values.redirectToProfile) {
-    return <Redirect to={"/user/" + values.userId} />;
+  if (redirect) {
+    return <Redirect to={"/media/" + media._id} />;
   }
 
   return (
     <Card className={classes.card}>
       <CardContent>
-        <Typography variant="h6" className={classes.title}>
-          Edit Profile
+        <Typography type="headline" component="h1" className={classes.title}>
+          Edit Video Details
         </Typography>
 
         <TextField
-          id="name"
-          label="Name"
+          id="title"
+          label="Title"
           className={classes.textField}
-          value={values.name}
-          onChange={handleChange("name")}
+          value={media.title}
+          onChange={handleChange("title")}
           margin="normal"
         />
         <br />
 
         <TextField
-          id="email"
-          type="email"
-          label="Email"
+          id="multiline-flexible"
+          label="Description"
+          multiline
+          rows="2"
+          value={media.description}
+          onChange={handleChange("description")}
           className={classes.textField}
-          value={values.email}
-          onChange={handleChange("email")}
           margin="normal"
         />
         <br />
 
         <TextField
-          id="password"
-          type="password"
-          label="Password"
+          id="genre"
+          label="Genre"
           className={classes.textField}
-          value={values.password}
-          onChange={handleChange("password")}
+          value={media.genre}
+          onChange={handleChange("genre")}
           margin="normal"
         />
+        <br />
         <br />{" "}
 
-        {values.error && (
+        {error && (
           <Typography component="p" color="error">
             <Icon color="error" className={classes.error}>
               error
             </Icon>
-            {values.error}
+            {error}
           </Typography>
         )}
       </CardContent>

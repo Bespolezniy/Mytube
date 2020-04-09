@@ -1,105 +1,85 @@
-import React from "react"
-import { Link } from "react-router-dom"
-import { useHistory } from "react-router-dom"
+import React from "react";
+import { Link, withRouter } from "react-router-dom";
 
-import { makeStyles } from "@material-ui/core/styles"
-import { 
+import {
   AppBar,
-  Toolbar, 
+  Toolbar,
+  Typography,
   IconButton,
   Button,
-  Typography
-} from "@material-ui/core"
-import { Home, AddBox } from "@material-ui/icons"
+} from "@material-ui/core";
+import HomeIcon from "@material-ui/icons/Home";
+import AddBoxIcon from "@material-ui/icons/AddBox";
 
-import auth from "../auth/auth-helper"
+import auth from "./../auth/auth-helper";
 
-const useStyles = makeStyles({
-  link: {
-    fontWeight: "bold",
-    textDecoration: "none"
-  }
-})
+const isActive = (history, path) => {
+  if (history.location.pathname == path) return { color: "#f99085" };
+  else return { color: "#efdcd5" };
+};
 
-const Menu = () => {
+const Menu = withRouter(({ history }) => (
+  <AppBar position="static">
+    <Toolbar>
+      <Typography type="title" color="inherit">
+        Youtube Clone
+      </Typography>
 
-  const classes = useStyles()
-  let history = useHistory()
+      <div>
+        <Link to="/">
+          <IconButton aria-label="Home" style={isActive(history, "/")}>
+            <HomeIcon />
+          </IconButton>
+        </Link>
+      </div>
 
-  const isActive = (history, path) => {
-
-    if (history.location.pathname == path)
-      return {color: "#ff3d00"}
-    else
-      return {color: "#ffffff"}
-  }
-
-  return (
-    <div>
-      <AppBar position="static">
-        <Toolbar>
-          <Typography type="title" color="inherit">
-            React-node boilerplate
-          </Typography>
-
-          <Link className={classes.link} to="/">
-            <IconButton 
-              aria-label="Home" 
-              style={isActive(history, "/")}
-            >
-              <Home/>
-            </IconButton>
-          </Link>
-
-          <Link className={classes.link} to="/users">
-            <Button 
-              style={isActive(history, "/users")}
-            >
-              Users
-            </Button>
-          </Link>
-
-          <Link to="/media/new">
-            <Button style={isActive(history, "/media/new")}>
-              <AddBoxIcon style={{ marginRight: "8px" }} /> 
-              Add Media
-            </Button>
-          </Link>
-
-          {!auth.isAuthenticated() && (<span>
-            <Link className={classes.link} to="/signup">
-              <Button 
-                style={isActive(history, "/signup")}
-              >
-                Sign Up
-              </Button>
-            </Link>
-
-            <Link className={classes.link} to="/signin">
-              <Button 
-                style={isActive(history, "/signin")}
-              >
-                Sign In
-              </Button>
-            </Link>
-          </span>)
-        }
-
-        {
-          auth.isAuthenticated() && (
+      <div style={{ position: "absolute", right: "10px" }}>
+        <Link style={{ float: "right" }}>
+          {!auth.isAuthenticated() && (
             <span>
-              <Button 
-                color="inherit" 
-                onClick={() => {auth.clearJwt(() => history.push("/"))}}
+              <Link to="/signup">
+                <Button style={isActive(history, "/signup")}>Sign up</Button>
+              </Link>
+
+              <Link to="/signin">
+                <Button style={isActive(history, "/signin")}>Sign In</Button>
+              </Link>
+            </span>
+          )}
+
+          {auth.isAuthenticated() && (
+            <Link>
+              <Link to="/media/new">
+                <Button style={isActive(history, "/media/new")}>
+                  <AddBoxIcon style={{ marginRight: "8px" }} /> Add Media
+                </Button>
+              </Link>
+
+              <Link to={"/user/" + auth.isAuthenticated().user._id}>
+                <Button
+                  style={isActive(
+                    history,
+                    "/user/" + auth.isAuthenticated().user._id
+                  )}
+                >
+                  My Profile
+                </Button>
+              </Link>
+              
+              <Button
+                color="inherit"
+                onClick={() => {
+                  auth.signout(() => history.push("/"));
+                }}
               >
                 Sign out
               </Button>
-            </span>
+            </Link>
           )}
-        </Toolbar>
-      </AppBar>
-    </div>
-  )
-}
+        </Link>
+      </div>
+    </Toolbar>
+  </AppBar>
+));
 
-export default Menu
+export default Menu;

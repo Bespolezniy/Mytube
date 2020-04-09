@@ -1,9 +1,9 @@
-import mongoose from "mongoose"
+import mongoose from "mongoose";
 
 const MediaSchema = new mongoose.Schema({
   title: {
     type: String,
-    required: "Title is required"
+    required: "title is required",
   },
   description: String,
   genre: String,
@@ -11,11 +11,11 @@ const MediaSchema = new mongoose.Schema({
   postedBy: { type: mongoose.Schema.ObjectId, ref: "User" },
   created: {
     type: Date,
-    default: Date.now
+    default: Date.now,
   },
   updated: {
-    type: Date
-  }
-})
+    type: Date,
+  },
+});
 
-export default mongoose.model("Media", MediaSchema)
+export default mongoose.model("Media", MediaSchema);

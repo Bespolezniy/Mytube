@@ -1,119 +1,79 @@
-const create = async user => {
-
+const create = async (user) => {
   try {
     let response = await fetch("/api/users/", {
       method: "POST",
       headers: {
-        "Accept": "application/json",
-        "Content-Type": "application/json"
+        Accept: "application/json",
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify(user)
-    })
-    return await response.json()
+      body: JSON.stringify(user),
+    });
+    return await response.json();
+  } catch (err) {
+    console.log(err);
   }
-  catch (err) {
-    return console.log(err)
-  }
-  
-}
+};
 
-const list = async signal => {
-
+const list = async (signal) => {
   try {
     let response = await fetch("/api/users/", {
       method: "GET",
-      signal: signal
-    })
-    return await response.json()
+      signal: signal,
+    });
+    return await response.json();
+  } catch (err) {
+    console.log(err);
   }
-  catch (err) {
-    return console.log(err)
-  }
-
-}
+};
 
 const read = async (params, credentials, signal) => {
-
   try {
     let response = await fetch("/api/users/" + params.userId, {
       method: "GET",
       signal: signal,
       headers: {
-        "Accept": "application/json",
+        Accept: "application/json",
         "Content-Type": "application/json",
-        "Authorization": "Bearer " + credentials.t
-      }
-    })
-    return await response.json()
+        Authorization: "Bearer " + credentials.t,
+      },
+    });
+    return await response.json();
+  } catch (err) {
+    console.log(err);
   }
-  catch (err) {
-    return console.log(err)
-  }
-
-}
+};
 
 const update = async (params, credentials, user) => {
-
   try {
-    const response = await fetch("/api/users/" + params.userId, {
+    let response = await fetch("/api/users/" + params.userId, {
       method: "PUT",
       headers: {
-        "Accept": "application/json",
+        Accept: "application/json",
         "Content-Type": "application/json",
-        "Authorization": "Bearer " + credentials.t
+        Authorization: "Bearer " + credentials.t,
       },
-      body: JSON.stringify(user)
-    })
-    return await response.json()
+      body: JSON.stringify(user),
+    });
+    return await response.json();
+  } catch (err) {
+    console.log(err);
   }
-  catch (err) {
-    console.log(err)
-  }
-
-}
+};
 
 const remove = async (params, credentials) => {
-
   try {
-    const response = await fetch("/api/users/" + params.userId, {
+    let response = await fetch("/api/users/" + params.userId, {
       method: "DELETE",
       headers: {
-        "Accept": "application/json",
+        Accept: "application/json",
         "Content-Type": "application/json",
-        "Authorization": "Bearer " + credentials.t
-      }
-    })
-    return await response.json()
-  }
-  catch (err) {
-    console.log(err)
-  }
-
-}
-
-const listByUser = async params => {
-  try {
-    let response = await fetch("/api/media/by/" + params.userId, {
-      method: "GET",
-      headers: {
-        "Accept": "application/json",
-        "Content-Type": "application/json"
-      }
-    })
-    return await response.json()
+        Authorization: "Bearer " + credentials.t,
+      },
+    });
+    return await response.json();
   } catch (err) {
-    console.log(err)
+    console.log(err);
   }
-}
+};
 
-export { 
-  create, 
-  list, 
-  read, 
-  update, 
-  remove,
-  listByUser
-}
-  
-  
-
+export { create, list, read, update, remove };

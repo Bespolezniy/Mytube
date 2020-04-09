@@ -2,21 +2,21 @@ import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { Redirect } from "react-router-dom";
 
-import {
-  IconButton,
+import { 
+  IconButton, 
   Button,
   Dialog,
   DialogActions,
   DialogContent,
   DialogContentText,
-  DialogTitle,
+  DialogTitle
 } from "@material-ui/core";
 import DeleteIcon from "@material-ui/icons/Delete";
 
 import auth from "./../auth/auth-helper";
-import { remove } from "./api-user.js";
+import { remove } from "./api-media.js";
 
-export default function DeleteUser(props) {
+export default function DeleteMedia(props) {
   const [open, setOpen] = useState(false);
   const [redirect, setRedirect] = useState(false);
   const jwt = auth.isAuthenticated();
@@ -25,17 +25,16 @@ export default function DeleteUser(props) {
     setOpen(true);
   };
 
-  const deleteAccount = () => {
+  const deleteMedia = () => {
     remove(
       {
-        userId: props.userId,
+        mediaId: props.mediaId,
       },
       { t: jwt.token }
     ).then((data) => {
-      if (data && data.error) {
+      if (data.error) {
         console.log(data.error);
       } else {
-        auth.clearJWT(() => console.log("deleted"));
         setRedirect(true);
       }
     });
@@ -56,19 +55,22 @@ export default function DeleteUser(props) {
       </IconButton>
 
       <Dialog open={open} onClose={handleRequestClose}>
-        <DialogTitle>{"Delete Account"}</DialogTitle>
+        <DialogTitle>{"Delete " + props.mediaTitle}</DialogTitle>
 
         <DialogContent>
-          <DialogContentText>Confirm to delete your account.</DialogContentText>
+          <DialogContentText>
+            Confirm to delete {props.mediaTitle} from your account.
+          </DialogContentText>
         </DialogContent>
 
         <DialogActions>
           <Button onClick={handleRequestClose} color="primary">
             Cancel
           </Button>
-
+          
           <Button
-            onClick={deleteAccount}
+            onClick={deleteMedia}
+            variant="contained"
             color="secondary"
             autoFocus="autoFocus"
           >
@@ -80,6 +82,7 @@ export default function DeleteUser(props) {
   );
 }
 
-DeleteUser.propTypes = {
-  userId: PropTypes.string.isRequired,
+DeleteMedia.propTypes = {
+  mediaId: PropTypes.string.isRequired,
+  mediaTitle: PropTypes.string.isRequired,
 };

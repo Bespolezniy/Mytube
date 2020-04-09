@@ -1,24 +1,27 @@
-import { createMuiTheme } from "@material-ui/core/styles"
-import { blue, deepOrange } from "@material-ui/core/colors"
+import { createMuiTheme } from "@material-ui/core/styles";
+import { red, brown } from "@material-ui/core/colors";
 
 const theme = createMuiTheme({
+  typography: {
+    useNextVariants: true,
+  },
   palette: {
     primary: {
-      light: blue["300"],
-      main: blue["400"],
-      dark: blue["500"],
+      light: "#f05545",
+      main: "#b71c1c",
+      dark: "#7f0000",
       contrastText: "#fff",
     },
     secondary: {
-      light: deepOrange["300"],
-      main: deepOrange["400"],
-      dark: deepOrange["500"],
-      contrastText: "#000",
+      light: "#fbfffc",
+      main: "#c8e6c9",
+      dark: "#97b498",
+      contrastText: "#37474f",
     },
-    openTitle: blue["400"],
-    protectedTitle: deepOrange["400"],
-    type: "light"
-  }
-})
+    openTitle: red["500"],
+    protectedTitle: brown["300"],
+    type: "light",
+  },
+});
 
-export default theme
+export default theme;
