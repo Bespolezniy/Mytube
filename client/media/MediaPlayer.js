@@ -24,7 +24,8 @@ const useStyles = makeStyles((theme) => ({
   },
   controls: {
     position: "relative",
-    backgroundColor: "#ababab52",
+    backgroundColor: "#000",
+    margin: "0 11px",
   },
   rangeRoot: {
     position: "absolute",
@@ -38,6 +39,12 @@ const useStyles = makeStyles((theme) => ({
     width: "100%",
     textAlign: "center",
     color: theme.palette.primary.light,
+  },
+  icon: {
+    color: "#fff",
+  },
+  iconDisabled: {
+    color: "rgba(255,255,255,0.3)",
   },
 }));
 
@@ -186,7 +193,7 @@ export default function MediaPlayer(props) {
 
       <div className={classes.controls}>
         <LinearProgress
-          color="primary"
+          color="secondary"
           variant="buffer"
           value={values.played * 100}
           valueBuffer={values.loaded * 100}
@@ -210,19 +217,22 @@ export default function MediaPlayer(props) {
           className={classes.rangeRoot}
         />
 
-        <IconButton color="primary" onClick={playPause}>
+        <IconButton className={classes.icon} onClick={playPause}>
           <Icon>
             {playing ? "pause" : values.ended ? "replay" : "play_arrow"}
           </Icon>
         </IconButton>
 
-        <IconButton disabled={!props.nextUrl} color="primary">
-          <Link to={props.nextUrl} style={{ color: "inherit" }}>
+        <IconButton disabled={!props.nextUrl} className={classes.icon}>
+          <Link
+            to={props.nextUrl}
+            style={{ color: "inherit", marginBottom: "-5px" }}
+          >
             <Icon>skip_next</Icon>
           </Link>
         </IconButton>
 
-        <IconButton color="primary" onClick={toggleMuted}>
+        <IconButton className={classes.icon} onClick={toggleMuted}>
           <Icon>
             {(volume > 0 && !muted && "volume_up") ||
               (muted && "volume_off") ||
@@ -240,21 +250,29 @@ export default function MediaPlayer(props) {
           style={{ verticalAlign: "middle" }}
         />
 
-        <IconButton color={loop ? "primary" : "default"} onClick={onLoop}>
-          <Icon>loop</Icon>
-        </IconButton>
-
-        <IconButton color="primary" onClick={onClickFullscreen}>
-          <Icon>fullscreen</Icon>
-        </IconButton>
-        
-        <span style={{ float: "right", padding: "10px", color: "#b83423" }}>
+        <span style={{ padding: "13px", color: "#fff" }}>
           <time dateTime={`P${Math.round(duration * values.played)}S`}>
             {format(duration * values.played)}
           </time>{" "}
           /{" "}
           <time dateTime={`P${Math.round(duration)}S`}>{format(duration)}</time>
         </span>
+
+        <IconButton
+          style={{ float: "right" }}
+          className={classes.icon}
+          onClick={onClickFullscreen}
+        >
+          <Icon>fullscreen</Icon>
+        </IconButton>
+
+        <IconButton
+          className={loop ? classes.icon : classes.iconDisabled}
+          onClick={onLoop}
+          style={{ float: "right" }}
+        >
+          <Icon>loop</Icon>
+        </IconButton>
       </div>
     </div>
   );

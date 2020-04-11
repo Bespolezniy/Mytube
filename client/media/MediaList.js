@@ -12,14 +12,13 @@ const useStyles = makeStyles((theme) => ({
     flexWrap: "wrap",
     justifyContent: "space-around",
     overflow: "hidden",
-    background: theme.palette.background.paper,
+    background: "#f5f5f5",
     textAlign: "left",
-    padding: "8px 16px",
+    padding: "0px 16px 16px 16px",
   },
   gridList: {
     width: "100%",
     minHeight: 180,
-    padding: "0px 0 10px",
   },
   title: {
     padding: `${theme.spacing(3)}px ${theme.spacing(2.5)}px ${theme.spacing(
@@ -40,7 +39,8 @@ const useStyles = makeStyles((theme) => ({
   tileTitle: {
     fontSize: "1.1em",
     marginBottom: "5px",
-    color: "rgb(193, 173, 144)",
+    color: "#fff",
+    textDecoration: "none",
     display: "block",
   },
   tileGenre: {
@@ -55,7 +55,7 @@ export default function MediaList(props) {
 
   return (
     <div className={classes.root}>
-      <GridList className={classes.gridList} cols={3}>
+      <GridList className={classes.gridList} cols={4}>
         {props.media.map((tile, i) => (
           <GridListTile key={i} className={classes.tile}>
             <Link to={"/media/" + tile._id}>

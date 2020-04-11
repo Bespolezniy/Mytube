@@ -17,14 +17,10 @@ const useStyles = makeStyles((theme) => ({
     paddingBottom: 24,
     backgroundColor: "#80808024",
   }),
-  title: {
-    margin: `${theme.spacing(3)}px ${theme.spacing(1)}px ${theme.spacing(2)}px`,
-    color: theme.palette.openTitle,
-    fontSize: "1em",
-  },
   card: {
     width: "100%",
     display: "inline-flex",
+    marginBottom: "10px"
   },
   details: {
     display: "inline-block",
@@ -64,7 +60,7 @@ export default function RelatedMedia(props) {
 
   return (
     <Paper className={classes.root} elevation={4} style={{ padding: "16px" }}>
-      <Typography type="title" className={classes.title}>
+      <Typography type="title" color="primary">
         Up Next
       </Typography>
 

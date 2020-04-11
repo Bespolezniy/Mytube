@@ -26,7 +26,7 @@ const useStyles = makeStyles((theme) => ({
     padding: "20px",
   },
   header: {
-    padding: "0px 16px 16px 12px",
+    padding: "16px 16px 16px 12px",
   },
   action: {
     margin: "24px 20px 0px 0px",
@@ -49,6 +49,12 @@ export default function Media(props) {
 
   return (
     <Card className={classes.card}>
+      <MediaPlayer
+        srcUrl={mediaUrl}
+        nextUrl={nextUrl}
+        handleAutoplay={props.handleAutoplay}
+      />
+
       <CardHeader
         className={classes.header}
         title={props.media.title}
@@ -56,12 +62,6 @@ export default function Media(props) {
           <span className={classes.action}>{props.media.views + " views"}</span>
         }
         subheader={props.media.genre}
-      />
-
-      <MediaPlayer
-        srcUrl={mediaUrl}
-        nextUrl={nextUrl}
-        handleAutoplay={props.handleAutoplay}
       />
 
       <List dense>
@@ -84,10 +84,10 @@ export default function Media(props) {
               <ListItemSecondaryAction>
                 <Link to={"/media/edit/" + props.media._id}>
                   <IconButton aria-label="Edit" color="secondary">
-                    <Edit />
+                    <Edit color="primary" />
                   </IconButton>
                 </Link>
-                
+
                 <DeleteMedia
                   mediaId={props.media._id}
                   mediaTitle={props.media.title}
@@ -96,7 +96,7 @@ export default function Media(props) {
             )}
         </ListItem>
         <Divider />
-        
+
         <ListItem>
           <ListItemText primary={props.media.description} />
         </ListItem>

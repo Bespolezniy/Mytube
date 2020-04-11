@@ -1,19 +1,20 @@
 import React, { useState, useEffect } from "react";
 
 import { makeStyles } from "@material-ui/core/styles";
-import { Card, Typography } from "@material-ui/core";
+import { Card, Typography, Grid } from "@material-ui/core";
 
 import MediaList from "../media/MediaList";
 import { listPopular } from "../media/api-media.js";
 
 const useStyles = makeStyles((theme) => ({
   card: {
-    margin: `${theme.spacing(5)}px 30px`,
+    backgroundColor: "#f5f5f5",
   },
   title: {
-    padding: `${theme.spacing(3)}px ${theme.spacing(2.5)}px 0px`,
-    color: theme.palette.text.secondary,
-    fontSize: "1em",
+    padding: theme.spacing(2.5),
+    color: theme.palette.primary.dark,
+    fontSize: "1.5em",
+    fontWeight: 500
   },
   media: {
     minHeight: 330,
@@ -42,12 +43,16 @@ export default function Home() {
   }, []);
 
   return (
-    <Card className={classes.card}>
-      <Typography variant="h2" className={classes.title}>
-        Popular Videos
-      </Typography>
+    <Grid container direction="row">
+      <Grid item xs={12}>
+        <Card className={classes.card}>
+          <Typography variant="h2" className={classes.title}>
+            Popular Videos
+          </Typography>
 
-      <MediaList media={media} />
-    </Card>
+          <MediaList media={media} />
+        </Card>
+      </Grid>
+    </Grid>
   );
 }

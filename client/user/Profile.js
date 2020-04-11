@@ -24,7 +24,6 @@ import MediaList from "../media/MediaList";
 
 const useStyles = makeStyles((theme) => ({
   root: theme.mixins.gutters({
-    maxWidth: 600,
     margin: "auto",
     padding: theme.spacing(3),
     marginTop: theme.spacing(5),

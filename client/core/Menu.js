@@ -4,82 +4,101 @@ import { Link, withRouter } from "react-router-dom";
 import {
   AppBar,
   Toolbar,
+  Button,
   Typography,
   IconButton,
-  Button,
+  Tooltip,
 } from "@material-ui/core";
-import HomeIcon from "@material-ui/icons/Home";
-import AddBoxIcon from "@material-ui/icons/AddBox";
+import {
+  YouTube,
+  AddBox,
+  Person,
+  ExitToApp,
+  PersonAdd,
+  LockOpen,
+} from "@material-ui/icons";
+import { makeStyles } from "@material-ui/core/styles";
 
 import auth from "./../auth/auth-helper";
+
+const useStyles = makeStyles((theme) => ({
+  appBar: {
+    backgroundColor: "#fff",
+  },
+  link: {
+    color: theme.palette.primary.dark,
+    fontWeight: "bold",
+    textDecoration: "none",
+  },
+}));
 
 const isActive = (history, path) => {
   if (history.location.pathname == path) return { color: "#f99085" };
   else return { color: "#efdcd5" };
 };
 
-const Menu = withRouter(({ history }) => (
-  <AppBar position="static">
-    <Toolbar>
-      <Typography type="title" color="inherit">
-        Youtube Clone
-      </Typography>
+const Menu = withRouter(({ history }) => {
+  const classes = useStyles();
 
-      <div>
-        <Link to="/">
-          <IconButton aria-label="Home" style={isActive(history, "/")}>
-            <HomeIcon />
-          </IconButton>
-        </Link>
-      </div>
+  return (
+    <AppBar position="static" className={classes.appBar}>
+      <Toolbar>
+        <YouTube color="secondary" fontSize="large" />
 
-      <div style={{ position: "absolute", right: "10px" }}>
-        <Link style={{ float: "right" }}>
-          {!auth.isAuthenticated() && (
-            <span>
-              <Link to="/signup">
-                <Button style={isActive(history, "/signup")}>Sign up</Button>
-              </Link>
+        <div>
+          <Link to="/" className={classes.link}>
+            <Typography title="На главную">YouTube Clone</Typography>
+          </Link>
+        </div>
 
-              <Link to="/signin">
-                <Button style={isActive(history, "/signin")}>Sign In</Button>
-              </Link>
-            </span>
-          )}
+        <div style={{ position: "absolute", right: "10px" }}>
+          <div style={{ float: "right" }}>
+            {!auth.isAuthenticated() && (
+              <span>
+                <Link className={classes.link} to="/signup">
+                  <Button startIcon={<PersonAdd />}>Sign up</Button>
+                </Link>
 
-          {auth.isAuthenticated() && (
-            <Link>
-              <Link to="/media/new">
-                <Button style={isActive(history, "/media/new")}>
-                  <AddBoxIcon style={{ marginRight: "8px" }} /> Add Media
-                </Button>
-              </Link>
+                <Link className={classes.link} to="/signin">
+                  <Button startIcon={<LockOpen />}>Sign In</Button>
+                </Link>
+              </span>
+            )}
 
-              <Link to={"/user/" + auth.isAuthenticated().user._id}>
-                <Button
-                  style={isActive(
-                    history,
-                    "/user/" + auth.isAuthenticated().user._id
-                  )}
+            {auth.isAuthenticated() && (
+              <div>
+                <Tooltip title="Создать видео">
+                  <Link to="/media/new">
+                    <IconButton style={isActive(history, "/media/new")}>
+                      <AddBox color="primary" />
+                    </IconButton>
+                  </Link>
+                </Tooltip>
+
+                <Link
+                  className={classes.link}
+                  to={"/user/" + auth.isAuthenticated().user._id}
                 >
-                  My Profile
+                  <Button startIcon={<Person />}>My Profile</Button>
+                </Link>
+
+                <Button
+                  className={classes.link}
+                  color="inherit"
+                  onClick={() => {
+                    auth.clearJWT(() => history.push("/"));
+                  }}
+                  startIcon={<ExitToApp />}
+                >
+                  Sign out
                 </Button>
-              </Link>
-              
-              <Button
-                color="inherit"
-                onClick={() => {
-                  auth.signout(() => history.push("/"));
-                }}
-              >
-                Sign out
-              </Button>
-            </Link>
-          )}
-        </Link>
-      </div>
-    </Toolbar>
-  </AppBar>
-));
+              </div>
+            )}
+          </div>
+        </div>
+      </Toolbar>
+    </AppBar>
+  );
+});
 
 export default Menu;
