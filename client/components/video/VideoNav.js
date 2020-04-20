@@ -3,9 +3,9 @@ import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Grid, FormControlLabel, Switch } from "@material-ui/core";
 
-import { read, listRelated } from "./api-media.js";
-import Media from "./Media";
-import RelatedMedia from "./RelatedMedia";
+import { read, listRelated } from "../../api/api-media.js";
+import VideoDetail from "./VideoDetail";
+import RelatedVideo from "./RelatedVideo";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -19,7 +19,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function PlayMedia(props) {
+export default function VideoNav(props) {
   const classes = useStyles();
   let [media, setMedia] = useState({ postedBy: {} });
   let [relatedMedia, setRelatedMedia] = useState([]);
@@ -104,7 +104,7 @@ export default function PlayMedia(props) {
     <div className={classes.root}>
       <Grid container spacing={8}>
         <Grid item xs={8} sm={8}>
-          <Media
+          <VideoDetail
             media={media}
             nextUrl={nextUrl}
             handleAutoplay={handleAutoplay}
@@ -125,7 +125,7 @@ export default function PlayMedia(props) {
               label={autoPlay ? "Autoplay ON" : "Autoplay OFF"}
             />
             
-            <RelatedMedia media={relatedMedia} />
+            <RelatedVideo media={relatedMedia} />
           </Grid>
         )}
       </Grid>

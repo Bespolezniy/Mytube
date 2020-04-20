@@ -3,8 +3,8 @@ import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Card, Typography, Grid } from "@material-ui/core";
 
-import MediaList from "../media/MediaList";
-import { listPopular } from "../media/api-media.js";
+import VideoList from "../video/VideoList";
+import { listPopular } from "../../api/api-media";
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -37,7 +37,7 @@ export default function Home() {
       }
     });
     
-    return function cleanup() {
+    return () => {
       abortController.abort();
     };
   }, []);
@@ -50,7 +50,7 @@ export default function Home() {
             Popular Videos
           </Typography>
 
-          <MediaList media={media} />
+          <VideoList media={media} />
         </Card>
       </Grid>
     </Grid>

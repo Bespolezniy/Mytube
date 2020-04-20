@@ -55,7 +55,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function RelatedMedia(props) {
+export default function RelatedVideo(props) {
   const classes = useStyles();
 
   return (
@@ -121,6 +121,6 @@ export default function RelatedMedia(props) {
   );
 }
 
-RelatedMedia.propTypes = {
+RelatedVideo.propTypes = {
   media: PropTypes.array.isRequired,
 };

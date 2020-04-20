@@ -17,9 +17,9 @@ import {
 } from "@material-ui/core";
 import Edit from "@material-ui/icons/Edit";
 
-import auth from "./../auth/auth-helper";
-import DeleteMedia from "./DeleteMedia";
-import MediaPlayer from "./MediaPlayer";
+import auth from "../../utils/auth-helper";
+import DeleteVideo from "./DeleteVideo";
+import VideoPlayer from "./../shared/VideoPlayer";
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -40,7 +40,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Media(props) {
+export default function VideoDetail(props) {
   const classes = useStyles();
   const mediaUrl = props.media._id
     ? `/api/media/video/${props.media._id}`
@@ -49,7 +49,7 @@ export default function Media(props) {
 
   return (
     <Card className={classes.card}>
-      <MediaPlayer
+      <VideoPlayer
         srcUrl={mediaUrl}
         nextUrl={nextUrl}
         handleAutoplay={props.handleAutoplay}
@@ -88,7 +88,7 @@ export default function Media(props) {
                   </IconButton>
                 </Link>
 
-                <DeleteMedia
+                <DeleteVideo
                   mediaId={props.media._id}
                   mediaTitle={props.media.title}
                 />
@@ -105,7 +105,7 @@ export default function Media(props) {
   );
 }
 
-Media.propTypes = {
+VideoDetail.propTypes = {
   media: PropTypes.object,
   nextUrl: PropTypes.string,
   handleAutoplay: PropTypes.func.isRequired,

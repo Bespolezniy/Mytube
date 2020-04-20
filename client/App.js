@@ -1,14 +1,14 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { BrowserRouter } from "react-router-dom";
 import { hot } from "react-hot-loader";
 
 import { ThemeProvider } from "@material-ui/styles";
 
-import theme from "./theme";
-import MainRouter from "./MainRouter";
+import theme from "./utils/theme";
+import MainRouter from "./router/MainRouter";
 
 const App = () => {
-  React.useEffect(() => {
+  useEffect(() => {
     const jssStyles = document.querySelector("#jss-server-side");
     
     if (jssStyles) {

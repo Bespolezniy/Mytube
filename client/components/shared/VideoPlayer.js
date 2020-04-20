@@ -48,7 +48,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function MediaPlayer(props) {
+export default function VideoPlayer(props) {
   const classes = useStyles();
   const [playing, setPlaying] = useState(false);
   const [volume, setVolume] = useState(0.8);
@@ -278,7 +278,7 @@ export default function MediaPlayer(props) {
   );
 }
 
-MediaPlayer.propTypes = {
+VideoPlayer.propTypes = {
   srcUrl: PropTypes.string,
   nextUrl: PropTypes.string,
   handleAutoplay: PropTypes.func.isRequired,

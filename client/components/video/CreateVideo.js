@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Redirect } from "react-router-dom";
 
 import { 
@@ -8,12 +8,13 @@ import {
   Button,
   TextField,
   Typography,
-  Icon 
+  Icon
 } from "@material-ui/core";
+import FileUpload from "@material-ui/icons/AddToQueue";
 import { makeStyles } from "@material-ui/core/styles";
 
-import auth from "./../auth/auth-helper";
-import { read, update } from "./api-media.js";
+import { create } from "../../api/api-media.js";
+import auth from "../../utils/auth-helper";
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -48,68 +49,83 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function EditProfile({ match }) {
+export default function CreateVideo() {
   const classes = useStyles();
-  const [media, setMedia] = useState({ title: "", description: "", genre: "" });
-  const [redirect, setRedirect] = useState(false);
-  const [error, setError] = useState("");
+  const [values, setValues] = useState({
+    title: "",
+    video: "",
+    description: "",
+    genre: "",
+    redirect: false,
+    error: "",
+    mediaId: "",
+  });
   const jwt = auth.isAuthenticated();
 
-  useEffect(() => {
-    const abortController = new AbortController();
-
-    read({ mediaId: match.params.mediaId }).then((data) => {
-      if (data.error) {
-        setError(data.error);
-      } else {
-        setMedia(data);
-      }
-    });
-    return function cleanup() {
-      abortController.abort();
-    };
-  }, [match.params.mediaId]);
-
   const clickSubmit = () => {
-    update(
+    let mediaData = new FormData();
+    values.title && mediaData.append("title", values.title);
+    values.video && mediaData.append("video", values.video);
+    values.description && mediaData.append("description", values.description);
+    values.genre && mediaData.append("genre", values.genre);
+    create(
       {
-        mediaId: media._id,
+        userId: jwt.user._id,
       },
       {
         t: jwt.token,
       },
-      media
+      mediaData
     ).then((data) => {
       if (data.error) {
-        setError(data.error);
+        setValues({ ...values, error: data.error });
       } else {
-        setRedirect(true);
+        setValues({ ...values, error: "", mediaId: data._id, redirect: true });
       }
     });
   };
 
   const handleChange = (name) => (event) => {
-    let updatedMedia = { ...media };
-    updatedMedia[name] = event.target.value;
-    setMedia(updatedMedia);
+    const value = name === "video" ? event.target.files[0] : event.target.value;
+    setValues({ ...values, [name]: value });
   };
 
-  if (redirect) {
-    return <Redirect to={"/media/" + media._id} />;
+  if (values.redirect) {
+    return <Redirect to={"/media/" + values.mediaId} />;
   }
 
   return (
     <Card className={classes.card}>
       <CardContent>
         <Typography type="headline" component="h1" className={classes.title}>
-          Edit Video Details
+          New Video
         </Typography>
+
+        <input
+          accept="video/*"
+          onChange={handleChange("video")}
+          className={classes.input}
+          id="icon-button-file"
+          type="file"
+        />
+
+        <label htmlFor="icon-button-file">
+          <Button color="secondary" variant="contained" component="span">
+            Upload
+            <FileUpload />
+          </Button>
+        </label>{" "}
+
+        <span className={classes.filename}>
+          {values.video ? values.video.name : ""}
+        </span>
+        <br />
 
         <TextField
           id="title"
           label="Title"
           className={classes.textField}
-          value={media.title}
+          value={values.title}
           onChange={handleChange("title")}
           margin="normal"
         />
@@ -120,7 +136,7 @@ export default function EditProfile({ match }) {
           label="Description"
           multiline
           rows="2"
-          value={media.description}
+          value={values.description}
           onChange={handleChange("description")}
           className={classes.textField}
           margin="normal"
@@ -131,19 +147,19 @@ export default function EditProfile({ match }) {
           id="genre"
           label="Genre"
           className={classes.textField}
-          value={media.genre}
+          value={values.genre}
           onChange={handleChange("genre")}
           margin="normal"
         />
         <br />
         <br />{" "}
 
-        {error && (
+        {values.error && (
           <Typography component="p" color="error">
             <Icon color="error" className={classes.error}>
               error
             </Icon>
-            {error}
+            {values.error}
           </Typography>
         )}
       </CardContent>

@@ -19,7 +19,7 @@ import {
 } from "@material-ui/icons";
 import { makeStyles } from "@material-ui/core/styles";
 
-import auth from "./../auth/auth-helper";
+import auth from "../../utils/auth-helper";
 
 const useStyles = makeStyles((theme) => ({
   appBar: {

@@ -1,19 +1,19 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Redirect } from "react-router-dom";
 
-import { 
+import {
   Card,
   CardActions,
   CardContent,
   Button,
   TextField,
   Typography,
-  Icon 
+  Icon,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 
-import { signin } from "./api-auth.js";
-import auth from "./../auth/auth-helper";
+import auth from "../../utils/auth-helper";
+import { read, update } from "../../api/api-user.js";
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -23,12 +23,12 @@ const useStyles = makeStyles((theme) => ({
     marginTop: theme.spacing(5),
     paddingBottom: theme.spacing(2),
   },
+  title: {
+    margin: theme.spacing(2),
+    color: theme.palette.protectedTitle,
+  },
   error: {
     verticalAlign: "middle",
-  },
-  title: {
-    marginTop: theme.spacing(2),
-    color: theme.palette.openTitle,
   },
   textField: {
     marginLeft: theme.spacing(1),
@@ -41,28 +41,60 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Signin(props) {
+export default function EditProfile({ match }) {
   const classes = useStyles();
   const [values, setValues] = useState({
-    email: "",
+    name: "",
     password: "",
+    email: "",
+    open: false,
     error: "",
-    redirectToReferrer: false,
+    redirectToProfile: false,
   });
+  const jwt = auth.isAuthenticated();
+
+  useEffect(() => {
+    const abortController = new AbortController();
+    const signal = abortController.signal;
+
+    read(
+      {
+        userId: match.params.userId,
+      },
+      { t: jwt.token },
+      signal
+    ).then((data) => {
+      if (data && data.error) {
+        setValues({ ...values, error: data.error });
+      } else {
+        setValues({ ...values, name: data.name, email: data.email });
+      }
+    });
+
+    return function cleanup() {
+      abortController.abort();
+    };
+  }, [match.params.userId]);
 
   const clickSubmit = () => {
     const user = {
+      name: values.name || undefined,
       email: values.email || undefined,
       password: values.password || undefined,
     };
-
-    signin(user).then((data) => {
-      if (data.error) {
+    update(
+      {
+        userId: match.params.userId,
+      },
+      {
+        t: jwt.token,
+      },
+      user
+    ).then((data) => {
+      if (data && data.error) {
         setValues({ ...values, error: data.error });
       } else {
-        auth.authenticate(data, () => {
-          setValues({ ...values, error: "", redirectToReferrer: true });
-        });
+        setValues({ ...values, userId: data._id, redirectToProfile: true });
       }
     });
   };
@@ -71,23 +103,26 @@ export default function Signin(props) {
     setValues({ ...values, [name]: event.target.value });
   };
 
-  const { from } = props.location.state || {
-    from: {
-      pathname: "/",
-    },
-  };
-  const { redirectToReferrer } = values;
-
-  if (redirectToReferrer) {
-    return <Redirect to={from} />;
+  if (values.redirectToProfile) {
+    return <Redirect to={"/user/" + values.userId} />;
   }
 
   return (
     <Card className={classes.card}>
       <CardContent>
         <Typography variant="h6" className={classes.title}>
-          Sign In
+          Edit Profile
         </Typography>
+
+        <TextField
+          id="name"
+          label="Name"
+          className={classes.textField}
+          value={values.name}
+          onChange={handleChange("name")}
+          margin="normal"
+        />
+        <br />
 
         <TextField
           id="email"

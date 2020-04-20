@@ -13,13 +13,13 @@ import { StaticRouter } from "react-router-dom";
 
 import { ServerStyleSheets, ThemeProvider } from "@material-ui/styles";
 
-import theme from "./../client/theme";
-import routes from "./../client/routeConfig";
+import theme from "./../client/utils/theme";
+import routes from "./../client/router/routeConfig";
 import index from "./../index";
 import userRoutes from "./routes/user.routes";
 import authRoutes from "./routes/auth.routes";
 import mediaRoutes from "./routes/media.routes";
-import MainRouter from "./../client/MainRouter";
+import MainRouter from "./../client/router/MainRouter";
 import devBundle from "./devBundle";
 
 const CURRENT_WORKING_DIR = process.cwd();

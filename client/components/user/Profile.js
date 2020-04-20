@@ -17,10 +17,10 @@ import {
 import Edit from "@material-ui/icons/Edit";
 
 import DeleteUser from "./DeleteUser";
-import auth from "./../auth/auth-helper";
-import { read } from "./api-user.js";
-import { listByUser } from "../media/api-media.js";
-import MediaList from "../media/MediaList";
+import auth from "../../utils/auth-helper";
+import { read } from "../../api/api-user.js";
+import { listByUser } from "../../api/api-media.js";
+import VideoList from "../video/VideoList";
 
 const useStyles = makeStyles((theme) => ({
   root: theme.mixins.gutters({
@@ -132,7 +132,7 @@ export default function Profile({ match }) {
           />
         </ListItem>
         
-        <MediaList media={media} />
+        <VideoList media={media} />
       </List>
     </Paper>
   );

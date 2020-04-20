@@ -50,7 +50,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function MediaList(props) {
+export default function VideoList(props) {
   const classes = useStyles();
 
   return (
@@ -92,6 +92,6 @@ export default function MediaList(props) {
   );
 }
 
-MediaList.propTypes = {
+VideoList.propTypes = {
   media: PropTypes.array.isRequired,
 };

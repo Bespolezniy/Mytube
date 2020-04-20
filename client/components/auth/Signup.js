@@ -17,7 +17,7 @@ import {
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 
-import { create } from "./api-user.js";
+import { create } from "../../api/api-user.js";
 
 const useStyles = makeStyles((theme) => ({
   card: {

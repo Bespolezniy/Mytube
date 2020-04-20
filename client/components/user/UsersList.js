@@ -16,7 +16,7 @@ import {
 import ArrowForward from "@material-ui/icons/ArrowForward";
 import Person from "@material-ui/icons/Person";
 
-import { list } from "./api-user.js";
+import { list } from "../../api/api-user.js";
 
 const useStyles = makeStyles((theme) => ({
   root: theme.mixins.gutters({
@@ -29,7 +29,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Users() {
+export default function UsersList() {
   const classes = useStyles();
   const [users, setUsers] = useState([]);
 
